@@ -1,11 +1,14 @@
-import sys
 import os
+import sys
 import json
+import shutil
+
+from cutepy import HEX
 from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import TerminalTrueColorFormatter
 from pygments.style import Style
 from pygments.token import Token
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import TerminalTrueColorFormatter
 
 
 class ValidateFiles:
@@ -56,8 +59,12 @@ class ValidateFiles:
                     "Token.Name.Class": "#66cdaa",
                     "Token.Name.Exception": "#66cdaa",
                     "Token.Name.Decorator": "#66cdaa",
-                    "Token.Operator.Word": "#3f9c73"
+                    "Token.Operator.Word": "#3f9c73",
+                    "Token.LineForeground": "#ffffff",
+                    "Token.LineNumberForeground": "#ffffff"
                 }
+
+
                 with open(colors_json_path, "w") as colors_file:
                     json.dump(colors_data, colors_file, indent=4)
                 print(f"[ZAT] - File '{colors_json_path}' created successfully.")
@@ -71,7 +78,8 @@ class ValidateFiles:
             try:
                 config_data = {
                     "highlight": True,
-                    "line_numbers": True
+                    "line_numbers": True,
+                    "view_borders": True
                 }
                 with open(config_json_path, "w") as config_file:
                     json.dump(config_data, config_file, indent=4)
@@ -94,10 +102,12 @@ class CustomStyle(Style):
         This class is designed to be used with Pygments library for syntax highlighting.
     """
    
-
+    global line_color, line_numbr
     config_file_path = os.path.expanduser('~/.config/zat/colors.json')
     with open(config_file_path, 'r') as colors_file:
         config_data = json.load(colors_file)
+        line_color = config_data['Token.LineForeground']
+        line_numbr = config_data['Token.LineNumberForeground']
 
     styles = {
         Token.Comment:      config_data['Token.Comment'],
@@ -152,16 +162,19 @@ class Config:
         """
         Load the configuration from the JSON file.
 
-        If the configuration file is not found, set default values for line_numbers and highlight.
+        If the configuration file is not found, set default values for line_numbers,
+        highlight, and view_borders.
         """
         if os.path.exists(self.config_path):
             with open(self.config_path, 'r') as config_file:
                 config_data = json.load(config_file)
                 self.line_numbers = config_data.get("line_numbers", True)
                 self.highlight = config_data.get("highlight", True)
+                self.view_borders = config_data.get("view_borders", True)
         else:
             self.line_numbers = True
             self.highlight = True
+            self.view_borders = True
 
     def save_config(self):
         """
@@ -170,6 +183,7 @@ class Config:
         config_data = {
             "line_numbers": self.line_numbers,
             "highlight": self.highlight,
+            "view_borders": self.view_borders,
         }
         with open(self.config_path, 'w') as config_file:
             json.dump(config_data, config_file, indent=4)
@@ -187,14 +201,28 @@ def load_colors(colors_path):
               None if the file is not found or if there was an error parsing the JSON.
     """
     default_colors = {
-        "Token.Comment": "#eeeeee",
-        "Token.Keyword": "#858585",
-        "Token.Operator": "#858585",
-        "Token.Name": "#eeeeee",
-        "Token.Number": "#6e6e6e",
-        "Token.String": "#9d9d9d",
-        "Token.Punctuation": "#eeeeee",
-        "Token.Text": "#eeeeee"
+        "Token.Comment": "#66cdaa",
+        "Token.Keyword": "#449d6d",
+        "Token.Operator": "#3f9c73",
+        "Token.Name": "#66cdaa",
+        "Token.Number": "#80b48d",
+        "Token.String": "#d9faef",
+        "Token.Punctuation": "#66cdaa",
+        "Token.Text": "#66cdaa",
+        "Token.Keyword.Constant": "#66cdaa",
+        "Token.Keyword.Declaration": "#449d6d",
+        "Token.Keyword.Namespace": "#66cdaa",
+        "Token.Keyword.Type": "#449d6d",
+        "Token.Literal.Number": "#80b48d",
+        "Token.Literal.String": "#d9faef",
+        "Token.Name.Builtin": "#66cdaa",
+        "Token.Name.Function": "#66cdaa",
+        "Token.Name.Class": "#66cdaa",
+        "Token.Name.Exception": "#66cdaa",
+        "Token.Name.Decorator": "#66cdaa",
+        "Token.Operator.Word": "#3f9c73",
+        "Token.LineForeground": "#ffffff",
+        "Token.LineNumberForeground": "#ffffff"
     }
 
     if os.path.exists(colors_path):
@@ -227,7 +255,12 @@ def pretty_cat(filename, config, colors=None):
     try:
         with open(filename, 'r') as file:
             code = file.read()
-            lexer = get_lexer_by_name(filename.split('.')[-1])
+            file_extension = os.path.splitext(filename)[1].lstrip('.')
+
+            try:
+                lexer = get_lexer_by_name(file_extension)
+            except:
+                lexer = get_lexer_by_name('text')
 
             if colors:
                 custom_style = CustomStyle
@@ -235,26 +268,43 @@ def pretty_cat(filename, config, colors=None):
                 for token_type, color in colors.items():
                     setattr(custom_style, token_type, color)
 
-                # Use TerminalTrueColorFormatter for higher color depth
                 formatter = TerminalTrueColorFormatter(style=custom_style)
             else:
-                # Use TerminalTrueColorFormatter for higher color depth
                 formatter = TerminalTrueColorFormatter(style=CustomStyle)
 
             highlighted_code = highlight(code, lexer, formatter)
+            
+            if config.view_borders:
+                if config.line_numbers:
+                    term_size = shutil.get_terminal_size()
+                    term_columns = term_size.columns
+                    line_fg  = HEX.print(line_color[1:])
+                    numbr_fg = HEX.print(line_numbr[1:])
+                    highlighted_code = '\n'.join(
+                        f"{numbr_fg}{i+1:4}  {line_fg}│{HEX.reset}  {line}"
+                        for i, line in enumerate(highlighted_code.splitlines())
+                    )
+                    print(f"{line_fg}──────┬" + "─" * (term_columns - 7))
+                    print(f"{line_fg}      │{HEX.reset}  File: {filename}")
+                    print(f"{line_fg}──────┼" + "─" * (term_columns - 7))
+                    print(highlighted_code)
+                    print(f"{line_fg}──────┴" + "─" * (term_columns - 7))
+            else:
+                if config.line_numbers:
+                    term_size = shutil.get_terminal_size()
+                    term_columns = term_size.columns
+                    line_fg  = HEX.print(line_color[1:])
+                    numbr_fg = HEX.print(line_numbr[1:])
+                    highlighted_code = '\n'.join(
+                        f"{numbr_fg}{i+1:4}    {HEX.reset}{line}"
+                        for i, line in enumerate(highlighted_code.splitlines())
+                    )
+                    print(highlighted_code)
 
-            if config.line_numbers:
-                highlighted_code = '\n'.join(
-                    f"{i+1:4}  {line}"
-                    for i, line in enumerate(highlighted_code.splitlines())
-                )
-
-            print(highlighted_code)
     except FileNotFoundError:
         print(f"Error: File '{filename}' not found.")
     except Exception as e:
         print(f"Error: {e}")
-
 
 
 if __name__ == "__main__":
@@ -265,7 +315,7 @@ if __name__ == "__main__":
     colors = load_colors(colors_config_path)
 
     if len(sys.argv) < 2:
-        print("Usage: python pretty_cat.py <filename>")
+        print("Usage: python3 zat.py <filename>")
     else:
         filename = sys.argv[1]
         pretty_cat(filename, config, colors)
