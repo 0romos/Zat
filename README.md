@@ -59,6 +59,10 @@ _Below is an example of how you can instruct your audience on installing and set
    git clone https://github.com/0romos/Zat.git
     ```
 
+   ```sh
+   python3 -m pip install cutepy
+    ```
+
 <br />
 <center> <h1 align="left" id="usage">Usage</h1> </center>
 
