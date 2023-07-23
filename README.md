@@ -54,6 +54,7 @@ Zat is a sleek and modern file reader for Linux, purrfectly designed to elevate 
 _Below is an example of how you can instruct your audience on installing and setting up your binary file. This template doesn't rely on any external services._
 
 1. Clone the repo
+   
    ```sh
    git clone https://github.com/0romos/Zat.git
     ```
@@ -62,7 +63,7 @@ _Below is an example of how you can instruct your audience on installing and set
 <center> <h1 align="left" id="usage">Usage</h1> </center>
 
 1. Run Zat
-    ```sh
+    ```
     python3 src/zat.py <file / path to file>
     ``` 
 
