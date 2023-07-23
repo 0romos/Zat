@@ -71,6 +71,11 @@ _Below is an example of how you can instruct your audience on installing and set
     ```
     alias zat="python3 path/to/zat.py"
     ```
+
+3. Reopen a terminal and run zat
+    ```
+    zat <file / path to file>
+    ```
     
 See the [open issues](https://github.com/0romos/Zat) for a full list of proposed features (and known issues).
 
