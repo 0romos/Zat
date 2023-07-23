@@ -46,7 +46,7 @@
 
 Zat is a sleek and modern file reader for Linux, purrfectly designed to elevate your file reading experience. Embrace the power of the feline charm as you effortlessly navigate and unite files with finesse. Enjoy a seamless and delightful command-line journey with Zat!
 
-![image](https://media.discordapp.net/attachments/1115614887658410085/1132759924674404523/image.png)
+![image](https://media.discordapp.net/attachments/1115614887658410085/1132794887151046707/image.png)
 
 <br />
 <center> <h1 align="left" id="installation">Installation</h1> </center>
