@@ -60,8 +60,10 @@ class ValidateFiles:
                     "Token.Name.Exception": "#66cdaa",
                     "Token.Name.Decorator": "#66cdaa",
                     "Token.Operator.Word": "#3f9c73",
-                    "Token.LineForeground": "#ffffff",
-                    "Token.LineNumberForeground": "#ffffff"
+                    "Token.LineForeground": "#162f2d",
+                    "Token.LineNumberForeground": "#162f2d",
+                    "Token.FileTitle": "#162f2d"
+
                 }
 
 
@@ -101,7 +103,9 @@ class CustomStyle(Style):
     Note:
         This class is designed to be used with Pygments library for syntax highlighting.
     """
-   
+    ValidateFiles.folders()
+    ValidateFiles.files()
+
     global line_color, line_numbr, title_color
     config_file_path = os.path.expanduser('~/.config/zat/colors.json')
     with open(config_file_path, 'r') as colors_file:
@@ -222,10 +226,9 @@ def load_colors(colors_path):
         "Token.Name.Exception": "#66cdaa",
         "Token.Name.Decorator": "#66cdaa",
         "Token.Operator.Word": "#3f9c73",
-        "Token.LineForeground": "#ffffff",
-        "Token.LineNumberForeground": "#ffffff",
-        "Token.FileTitle": "#777777"
-
+        "Token.LineForeground": "#162f2d",
+        "Token.LineNumberForeground": "#162f2d",
+        "Token.FileTitle": "#162f2d"
     }
 
     if os.path.exists(colors_path):
@@ -312,7 +315,11 @@ def pretty_cat(filename, config, colors=None):
                 print(highlighted_code)
                 print(f"{line_fg}──────┴" + "─" * (term_columns - 7))
 
-            else: 
+            elif config.line_numbers == False:
+                if config.view_borders == False:
+                    print(highlighted_code)
+    
+            else:
                 print(highlighted_code)
                 
 
