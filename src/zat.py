@@ -102,12 +102,13 @@ class CustomStyle(Style):
         This class is designed to be used with Pygments library for syntax highlighting.
     """
    
-    global line_color, line_numbr
+    global line_color, line_numbr, title_color
     config_file_path = os.path.expanduser('~/.config/zat/colors.json')
     with open(config_file_path, 'r') as colors_file:
         config_data = json.load(colors_file)
         line_color = config_data['Token.LineForeground']
         line_numbr = config_data['Token.LineNumberForeground']
+        title_color = config_data['Token.FileTitle']
 
     styles = {
         Token.Comment:      config_data['Token.Comment'],
@@ -222,7 +223,9 @@ def load_colors(colors_path):
         "Token.Name.Decorator": "#66cdaa",
         "Token.Operator.Word": "#3f9c73",
         "Token.LineForeground": "#ffffff",
-        "Token.LineNumberForeground": "#ffffff"
+        "Token.LineNumberForeground": "#ffffff",
+        "Token.FileTitle": "#777777"
+
     }
 
     if os.path.exists(colors_path):
@@ -273,33 +276,45 @@ def pretty_cat(filename, config, colors=None):
                 formatter = TerminalTrueColorFormatter(style=CustomStyle)
 
             highlighted_code = highlight(code, lexer, formatter)
-            
+            term_size = shutil.get_terminal_size()
+            term_columns = term_size.columns
+            line_fg  = HEX.print(line_color[1:])
+            numbr_fg = HEX.print(line_numbr[1:])
+            title_fg = HEX.print(title_color[1:])
+
             if config.view_borders:
                 if config.line_numbers:
-                    term_size = shutil.get_terminal_size()
-                    term_columns = term_size.columns
-                    line_fg  = HEX.print(line_color[1:])
-                    numbr_fg = HEX.print(line_numbr[1:])
                     highlighted_code = '\n'.join(
                         f"{numbr_fg}{i+1:4}  {line_fg}│{HEX.reset}  {line}"
                         for i, line in enumerate(highlighted_code.splitlines())
                     )
                     print(f"{line_fg}──────┬" + "─" * (term_columns - 7))
-                    print(f"{line_fg}      │{HEX.reset}  File: {filename}")
+                    print(f"{line_fg}      │{HEX.reset}  {title_fg}File: {filename}{HEX.reset}")
                     print(f"{line_fg}──────┼" + "─" * (term_columns - 7))
                     print(highlighted_code)
                     print(f"{line_fg}──────┴" + "─" * (term_columns - 7))
-            else:
-                if config.line_numbers:
-                    term_size = shutil.get_terminal_size()
-                    term_columns = term_size.columns
-                    line_fg  = HEX.print(line_color[1:])
-                    numbr_fg = HEX.print(line_numbr[1:])
-                    highlighted_code = '\n'.join(
-                        f"{numbr_fg}{i+1:4}    {HEX.reset}{line}"
-                        for i, line in enumerate(highlighted_code.splitlines())
-                    )
-                    print(highlighted_code)
+
+            elif config.line_numbers:
+                highlighted_code = '\n'.join(
+                    f"{numbr_fg}{i+1:4}  {line_fg} {HEX.reset}  {line}"
+                    for i, line in enumerate(highlighted_code.splitlines())
+                )
+                print(highlighted_code)
+            
+            elif config.view_borders:
+                highlighted_code = '\n'.join(
+                    f"{numbr_fg}     {line_fg}│{HEX.reset}  {line}"
+                    for i, line in enumerate(highlighted_code.splitlines())
+                )
+                print(f"{line_fg}──────┬" + "─" * (term_columns - 7))
+                print(f"{line_fg}      │{HEX.reset}  {title_fg}File: {filename}{HEX.reset}")
+                print(f"{line_fg}──────┼" + "─" * (term_columns - 7))
+                print(highlighted_code)
+                print(f"{line_fg}──────┴" + "─" * (term_columns - 7))
+
+            else: 
+                print(highlighted_code)
+                
 
     except FileNotFoundError:
         print(f"Error: File '{filename}' not found.")
