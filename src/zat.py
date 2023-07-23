@@ -11,85 +11,81 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters import TerminalTrueColorFormatter
 
 
-class ValidateFiles:
-    """Utility class to validate and create necessary folders and files."""
-
-    def folders():
-        """
-        Check if the folder '~/.config/zat' exists, and create it if it doesn't.
-        """
-        folder_path = os.path.expanduser("~/.config/zat")
-        
-        if not os.path.exists(folder_path):
-            try:
-                os.makedirs(folder_path)
-                print(f"[ZAT] - Folder '{folder_path}' created successfully.")
-            except OSError as e:
-                print(f"[ZAT] - Error creating folder '{folder_path}': {str(e)}")
-        else:
-            pass
+def check_folders():
+    """
+    Check if the folder '~/.config/zat' exists, and create it if it doesn't.
+    """
+    folder_path = os.path.expanduser("~/.config/zat")
     
-    def files():
-        """
-        Check if 'colors.json' and 'config.json' exist inside the folder '~/.config/zat',
-        create them if they don't exist, and add default content.
-        """
-        folder_path = os.path.expanduser("~/.config/zat")
-        
-        colors_json_path = os.path.join(folder_path, "colors.json")
-        if not os.path.exists(colors_json_path):
-            try:
-                colors_data = {
-                    "Token.Comment": "#66cdaa",
-                    "Token.Keyword": "#449d6d",
-                    "Token.Operator": "#3f9c73",
-                    "Token.Name": "#66cdaa",
-                    "Token.Number": "#80b48d",
-                    "Token.String": "#d9faef",
-                    "Token.Punctuation": "#66cdaa",
-                    "Token.Text": "#66cdaa",
-                    "Token.Keyword.Constant": "#66cdaa",
-                    "Token.Keyword.Declaration": "#449d6d",
-                    "Token.Keyword.Namespace": "#66cdaa",
-                    "Token.Keyword.Type": "#449d6d",
-                    "Token.Literal.Number": "#80b48d",
-                    "Token.Literal.String": "#d9faef",
-                    "Token.Name.Builtin": "#66cdaa",
-                    "Token.Name.Function": "#66cdaa",
-                    "Token.Name.Class": "#66cdaa",
-                    "Token.Name.Exception": "#66cdaa",
-                    "Token.Name.Decorator": "#66cdaa",
-                    "Token.Operator.Word": "#3f9c73",
-                    "Token.LineForeground": "#162f2d",
-                    "Token.LineNumberForeground": "#162f2d",
-                    "Token.FileTitle": "#162f2d"
+    if not os.path.exists(folder_path):
+        try:
+            os.makedirs(folder_path)
+            print(f"[ZAT] - Folder '{folder_path}' created successfully.")
+        except OSError as e:
+            print(f"[ZAT] - Error creating folder '{folder_path}': {str(e)}")
+    else:
+        pass
 
-                }
+def check_files():
+    """
+    Check if 'colors.json' and 'config.json' exist inside the folder '~/.config/zat',
+    create them if they don't exist, and add default content.
+    """
+    folder_path = os.path.expanduser("~/.config/zat")
+    
+    colors_json_path = os.path.join(folder_path, "colors.json")
+    if not os.path.exists(colors_json_path):
+        try:
+            colors_data = {
+                "Token.Comment": "#66cdaa",
+                "Token.Keyword": "#449d6d",
+                "Token.Operator": "#3f9c73",
+                "Token.Name": "#66cdaa",
+                "Token.Number": "#80b48d",
+                "Token.String": "#d9faef",
+                "Token.Punctuation": "#66cdaa",
+                "Token.Text": "#66cdaa",
+                "Token.Keyword.Constant": "#66cdaa",
+                "Token.Keyword.Declaration": "#449d6d",
+                "Token.Keyword.Namespace": "#66cdaa",
+                "Token.Keyword.Type": "#449d6d",
+                "Token.Literal.Number": "#80b48d",
+                "Token.Literal.String": "#d9faef",
+                "Token.Name.Builtin": "#66cdaa",
+                "Token.Name.Function": "#66cdaa",
+                "Token.Name.Class": "#66cdaa",
+                "Token.Name.Exception": "#66cdaa",
+                "Token.Name.Decorator": "#66cdaa",
+                "Token.Operator.Word": "#3f9c73",
+                "Token.LineForeground": "#162f2d",
+                "Token.LineNumberForeground": "#162f2d",
+                "Token.FileTitle": "#162f2d"
 
+            }
 
-                with open(colors_json_path, "w") as colors_file:
-                    json.dump(colors_data, colors_file, indent=4)
-                print(f"[ZAT] - File '{colors_json_path}' created successfully.")
-            except Exception as e:
-                print(f"[ZAT] - Error creating '{colors_json_path}': {str(e)}")
-        else:
-            pass
+            with open(colors_json_path, "w") as colors_file:
+                json.dump(colors_data, colors_file, indent=4)
+            print(f"[ZAT] - File '{colors_json_path}' created successfully.")
+        except Exception as e:
+            print(f"[ZAT] - Error creating '{colors_json_path}': {str(e)}")
+    else:
+        pass
 
-        config_json_path = os.path.join(folder_path, "config.json")
-        if not os.path.exists(config_json_path):
-            try:
-                config_data = {
-                    "highlight": True,
-                    "line_numbers": True,
-                    "view_borders": True
-                }
-                with open(config_json_path, "w") as config_file:
-                    json.dump(config_data, config_file, indent=4)
-                print(f"[ZAT] - File '{config_json_path}' created successfully.")
-            except Exception as e:
-                print(f"[ZAT] - Error creating '{config_json_path}': {str(e)}")
-        else:
-            pass
+    config_json_path = os.path.join(folder_path, "config.json")
+    if not os.path.exists(config_json_path):
+        try:
+            config_data = {
+                "highlight": True,
+                "line_numbers": True,
+                "view_borders": True
+            }
+            with open(config_json_path, "w") as config_file:
+                json.dump(config_data, config_file, indent=4)
+            print(f"[ZAT] - File '{config_json_path}' created successfully.")
+        except Exception as e:
+            print(f"[ZAT] - Error creating '{config_json_path}': {str(e)}")
+    else:
+        pass
 
 
 class CustomStyle(Style):
@@ -103,8 +99,8 @@ class CustomStyle(Style):
     Note:
         This class is designed to be used with Pygments library for syntax highlighting.
     """
-    ValidateFiles.folders()
-    ValidateFiles.files()
+    check_folders()
+    check_files()
 
     global line_color, line_numbr, title_color
     config_file_path = os.path.expanduser('~/.config/zat/colors.json')
@@ -284,18 +280,20 @@ def pretty_cat(filename, config, colors=None):
             line_fg  = HEX.print(line_color[1:])
             numbr_fg = HEX.print(line_numbr[1:])
             title_fg = HEX.print(title_color[1:])
+            title_txt = f"{line_fg}│  ZAT  │{HEX.reset}  {title_fg}File: {filename}{HEX.reset}"
+            output_str = f"{title_txt}{' ' * (term_columns + 39 - len(title_txt))}{line_fg}│"
 
             if config.view_borders:
                 if config.line_numbers:
                     highlighted_code = '\n'.join(
-                        f"{numbr_fg}{i+1:4}  {line_fg}│{HEX.reset}  {line}"
+                        f"{line_fg}│ {numbr_fg}{i+1:4}  {line_fg}│{HEX.reset}  {line}"
                         for i, line in enumerate(highlighted_code.splitlines())
                     )
-                    print(f"{line_fg}──────┬" + "─" * (term_columns - 7))
-                    print(f"{line_fg}      │{HEX.reset}  {title_fg}File: {filename}{HEX.reset}")
-                    print(f"{line_fg}──────┼" + "─" * (term_columns - 7))
+                    print(f"{line_fg}┌───────┬" + "─" * (term_columns - 10) + "┐")
+                    print(output_str)
+                    print(f"{line_fg}├───────┼" + "─" * (term_columns - 10) + "┘")
                     print(highlighted_code)
-                    print(f"{line_fg}──────┴" + "─" * (term_columns - 7))
+                    print(f"{line_fg}└───────┴" + "─" * (term_columns - 10) + "┘")
 
             elif config.line_numbers:
                 highlighted_code = '\n'.join(
@@ -306,14 +304,14 @@ def pretty_cat(filename, config, colors=None):
             
             elif config.view_borders:
                 highlighted_code = '\n'.join(
-                    f"{numbr_fg}     {line_fg}│{HEX.reset}  {line}"
+                    f"{line_fg}│       {line_fg}│{HEX.reset}  {line}"
                     for i, line in enumerate(highlighted_code.splitlines())
                 )
-                print(f"{line_fg}──────┬" + "─" * (term_columns - 7))
-                print(f"{line_fg}      │{HEX.reset}  {title_fg}File: {filename}{HEX.reset}")
-                print(f"{line_fg}──────┼" + "─" * (term_columns - 7))
+                print(f"{line_fg}┌───────┬" + "─" * (term_columns - 10) + "┐")
+                print(output_str)
+                print(f"{line_fg}├───────┼" + "─" * (term_columns - 10) + "┘")
                 print(highlighted_code)
-                print(f"{line_fg}──────┴" + "─" * (term_columns - 7))
+                print(f"{line_fg}└───────┴" + "─" * (term_columns - 10) + "┘")
 
             elif config.line_numbers == False:
                 if config.view_borders == False:
