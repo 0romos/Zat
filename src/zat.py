@@ -281,7 +281,7 @@ def pretty_cat(filename, config, colors=None):
             numbr_fg = HEX.print(line_numbr[1:])
             title_fg = HEX.print(title_color[1:])
             title_txt = f"{line_fg}│  ZAT  │{HEX.reset}  {title_fg}File: {filename}{HEX.reset}"
-            output_str = f"{title_txt}{' ' * (term_columns + 39 - len(title_txt))}{line_fg}│"
+            output_str = f"{title_txt}{' ' * (term_columns + 41 - len(title_txt))}{line_fg}│"
 
             if config.view_borders:
                 if config.line_numbers:
