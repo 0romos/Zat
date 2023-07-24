@@ -102,13 +102,13 @@ class CustomStyle(Style):
     check_folders()
     check_files()
 
-    global line_color, line_numbr, title_color
+    global line_color, line_numbr
     config_file_path = os.path.expanduser('~/.config/zat/colors.json')
     with open(config_file_path, 'r') as colors_file:
         config_data = json.load(colors_file)
         line_color = config_data['Token.LineForeground']
         line_numbr = config_data['Token.LineNumberForeground']
-        title_color = config_data['Token.FileTitle']
+        # title_color = config_data['Token.FileTitle']
 
     styles = {
         Token.Comment:      config_data['Token.Comment'],
@@ -223,8 +223,7 @@ def load_colors(colors_path):
         "Token.Name.Decorator": "#66cdaa",
         "Token.Operator.Word": "#3f9c73",
         "Token.LineForeground": "#162f2d",
-        "Token.LineNumberForeground": "#162f2d",
-        "Token.FileTitle": "#162f2d"
+        "Token.LineNumberForeground": "#162f2d"
     }
 
     if os.path.exists(colors_path):
@@ -279,9 +278,9 @@ def pretty_cat(filename, config, colors=None):
             term_columns = term_size.columns
             line_fg  = HEX.print(line_color[1:])
             numbr_fg = HEX.print(line_numbr[1:])
-            title_fg = HEX.print(title_color[1:])
-            title_txt = f"{line_fg}│  ZAT  │{HEX.reset}  {title_fg}File: {filename}{HEX.reset}"
-            output_str = f"{title_txt}{' ' * (term_columns + 41 - len(title_txt))}{line_fg}│"
+            title_txt = f"{line_fg}│  ZAT  │ File: {filename}{HEX.reset}"
+            # output_str = f"{title_txt}{' ' * (term_columns + 22 - len(title_txt))}"
+            output_str = f"{title_txt}"
 
             if config.view_borders:
                 if config.line_numbers:
@@ -289,9 +288,9 @@ def pretty_cat(filename, config, colors=None):
                         f"{line_fg}│ {numbr_fg}{i+1:4}  {line_fg}│{HEX.reset}  {line}"
                         for i, line in enumerate(highlighted_code.splitlines())
                     )
-                    print(f"{line_fg}┌───────┬" + "─" * (term_columns - 10) + "┐")
+                    print(f"{line_fg}┌───────┬" + "─" * (term_columns - 10) + "─")
                     print(output_str)
-                    print(f"{line_fg}├───────┼" + "─" * (term_columns - 10) + "┘")
+                    print(f"{line_fg}├───────┼" + "─" * (term_columns - 10) + "─")
                     print(highlighted_code)
                     print(f"{line_fg}└───────┴" + "─" * (term_columns - 10) + "─")
 
