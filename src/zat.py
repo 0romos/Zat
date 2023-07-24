@@ -293,7 +293,7 @@ def pretty_cat(filename, config, colors=None):
                     print(output_str)
                     print(f"{line_fg}├───────┼" + "─" * (term_columns - 10) + "┘")
                     print(highlighted_code)
-                    print(f"{line_fg}└───────┴" + "─" * (term_columns - 10) + "┘")
+                    print(f"{line_fg}└───────┴" + "─" * (term_columns - 10) + "─")
 
             elif config.line_numbers:
                 highlighted_code = '\n'.join(
